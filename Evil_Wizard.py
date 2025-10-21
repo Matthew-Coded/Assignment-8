@@ -95,7 +95,7 @@ class Character():
 # Player Classes
 class Warrior(Character):
     def __init__(self, name):
-        super().__init__(name, health=140, attack_power=25)
+        super().__init__(name, health=140, attack_power=30)
 
     # Skills
     def _power_strike(self, opponent):
@@ -137,6 +137,50 @@ class Mage(Character):
             ("Ice Barrier (Blocks next incoming damage)", self._ice_barrier),
         ]
     
+class Hunter(Character):
+    def __init__(self, name):
+        super().__init__(name, health=125, attack_power=25)
+
+    def _multi_shot(self, opponent):
+        """Two Arrow shots of 70% damage"""
+        shot = int(round(self.attack_power * .7))
+        total = 0
+        for i in range(2):
+            print(f"{self.name}'s Multi-Shot arrow {i + 1} hits for {shot}!")
+            opponent.take_damage(shot)
+            total += shot
+        print(f"Total Multi-Shot damage: {total}")
+
+    def _evade(self,opponent):
+        self.evade_next = True
+        print(f"{self.name} prepares to Evade next attack!")
+
+    def get_abilities(self):
+        return [
+            ("Multi-Shot (Two 70% damage arrows)", self._multi_shot),
+            ("Evade (Next attack negated)", self._evade),
+        ]
+
+
+class Paladin(Character):
+    def __init__(self, name):
+        super().__init__(name, health=150, attack_power=26)
+
+    def _holy_strike(self,opponent):
+        damage = self.attack_power + 10
+        print(f"{self.name}'s Holy Strike smites for {damage}")
+        opponent.take_damage(damage)
+
+    def _divine_shield(self, opponent):
+        self.block_next = True
+        print(f"{self.name} emmits a Divine Shield around them! Next hit is negated!")
+
+    def get_abilities(self):
+        return [
+            ("Holy Strike (Adds +10 damage)", self._holy_strike),
+            ("Divine Shield (Negates next attack)", self._divine_shield)
+        ]
+
 # Enemy
 class EvilWizard(Character):
     def __init__(self, name):
@@ -164,6 +208,8 @@ def create_character():
     print("============================")
     print("1. Warrior")
     print("2. Mage")
+    print("3. Hunter")
+    print("4. Paladin")
 
 
     while True:
@@ -173,11 +219,17 @@ def create_character():
         if class_choice == "1":
             return Warrior(name)
         
-        if class_choice == "2":
+        elif class_choice == "2":
             return Mage(name)
         
+        elif class_choice == "3":
+            return Hunter(name)
+        
+        elif class_choice == "4":
+            return Paladin(name)
+        
         else:
-            print("Invalid choice. Please choose number 1 - 2.")
+            print("Invalid choice. Please choose a number 1 - 4.")
 
 # Player Actions
 def choose_player_action(player):
